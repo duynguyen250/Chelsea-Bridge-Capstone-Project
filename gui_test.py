@@ -5,10 +5,11 @@ import numpy as np
 from joblib import load
 from sklearn.linear_model import LinearRegression 
 
-lr_model = load("lr_model.joblib")
+lr_model = load(r"C:\Users\Duy Nguyen\Desktop\Chelsea Bridge\Chelsea-Bridge-Capstone-Project\lr_model.joblib")
 
 
 root = tk.Tk()
+
 
 def button_click():
     date = entry_date.get()
@@ -23,7 +24,7 @@ def button_click():
     month = datetime.month
     year = datetime.year
     
-    row = [day, month, year, temp, tide, tug, barge, tanker, 1, 1, sunrise.get(), sunset.get(), 1, 0, 0, 0]
+    row = [day, month, year, temp, tide, tug, barge, tanker, 1, 1, sunrise.get(), sunset.get(), clear.get(), cloudy.get(), overcast.get(), snow.get()]
     df = pd.DataFrame(row).T
     df.columns = ['Day', 'Month', 'Year', 'temp', 'Predicted (ft)', 'Tug', 'Barge',
        'Tanker', 'Previous Lift', 'instances_1hr', 'sunrise_flag',
@@ -31,7 +32,7 @@ def button_click():
     pred = lr_model.predict(df)
     minute = (pred[0] % 1) *60
     hour = int(pred[0])
-    tk.Label(root,text=f'The predicted time is {hour}:{minute:.0f}').grid(row=11,column=0)
+    tk.Label(root,text=f'The predicted time is {hour}:{minute:.0f}').grid(row=21,column=0)
     
 entry_date = tk.Entry(width=10)
 entry_date.insert(tk.END,'2022/10/02')
@@ -65,8 +66,24 @@ sunset = tk.IntVar()
 check_sunset = tk.Checkbutton(text='Sunset',variable=sunset)
 check_sunset.grid(row=7,column=0)
 
+clear = tk.IntVar()
+check_clear = tk.Checkbutton(text='Clear',variable=clear)
+check_clear.grid(row=8,column=0)
 
-tk.Button(root, text='Predict',command=button_click).grid(row=10,column=1)
+cloudy = tk.IntVar()
+check_cloudy = tk.Checkbutton(text='Cloudy',variable=cloudy)
+check_cloudy.grid(row=9,column=0)
+
+overcast = tk.IntVar()
+check_overcast = tk.Checkbutton(text='Overcast',variable=overcast)
+check_overcast.grid(row=10,column=0)
+
+snow = tk.IntVar()
+check_snow = tk.Checkbutton(text='Snow',variable=snow)
+check_snow.grid(row=11,column=0)
+
+
+tk.Button(root, text='Predict',command=button_click).grid(row=20,column=1)
 tk.Label(root, text="Today's date:").grid(row=0,column=0)
 tk.Label(root, text="Temperature:").grid(row=1,column=0)
 tk.Label(root, text="Tide:").grid(row=2,column=0)
@@ -76,6 +93,4 @@ tk.Label(root, text="Tanker:").grid(row=5,column=0)
 
 entry_date.focus()
 root.title('Linear Regression Model')
-root.columnconfigure(0,weight=1)
-root.rowconfigure(0,weight=1)
 root.mainloop()
